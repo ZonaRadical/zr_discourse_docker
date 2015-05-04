@@ -149,7 +149,7 @@ run:
      contents: |
        #!/bin/bash
        # If they requested a console, load pry instead
-       if [ "$@" == "c" -o "$@" == "console" ]
+       if [ "$*" == "c" -o "$*" == "console" ]
        then
         (cd /var/www/discourse && RAILS_ENV=production sudo -H -E -u discourse bundle exec pry -r ./config/environment)
        else
@@ -189,15 +189,22 @@ run:
                 endscript
         }
 
-  - replace:
-      filename: "/etc/logrotate.d/nginx"
-      from: "weekly"
-      to: "daily"
-
-  - replace:
-      filename: "/etc/logrotate.d/nginx"
-      from: "52"
-      to: "14"
+  - file:
+     path: /etc/logrotate.d/nginx
+     contents: |
+        /var/log/nginx/*.log {
+          daily
+          missingok
+          rotate 14
+          compress
+          delaycompress
+          notifempty
+          create 0640 www-data adm
+          sharedscripts
+          postrotate
+            sv 1 nginx
+          endscript
+        }
 
   # move state out of the container this fancy is done to support rapid rebuilds of containers,
   # we store anacron and logrotate state outside the container to ensure its maintained across builds
