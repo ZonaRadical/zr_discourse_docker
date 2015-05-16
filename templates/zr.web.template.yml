@@ -74,11 +74,11 @@ run:
       cmd:
         - git reset --hard
         - git clean -f
-        - git remote add origin-zr git@bitbucket.org:ihhha/zr_discourse_docker.git
+        - git remote add origin-zr git@bitbucket.org:ignatfialkovskiy/zr_discourse_docker.git
         - git remote set-branches --add origin-zr master
         - git pull
-        - git fetch origin-zr $version
-        - git checkout upstream $version
+        - git fetch origin $version
+        - git checkout $version
         - mkdir -p tmp/pids
         - mkdir -p tmp/sockets
         - touch tmp/.gitkeep
